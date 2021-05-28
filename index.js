@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const discord = require('discord.js');
+const http = require('http');
 const app = new discord.Client();
 const PREFIX = ".s";
 const STICKER_ROLE = "Sticker Master";
@@ -8,6 +9,14 @@ require('dotenv').config()
 /*
  * 	CALLBACK HELL MUHAHAHA
  */
+
+const server = http.createServer((req, res) =>{
+	res.writeHead(200, { 'Content-Type': 'application/xhtml+xml; charset=utf-8' });
+    res.write("<h2>StickerBot</h2>");
+	res.end();
+});
+
+server.listen(process.env.PORT, () => console.log("Heroku bağlandı"));
 
 mongoose.connect(process.env.HOST_NAME, {
 	useNewUrlParser: true,
