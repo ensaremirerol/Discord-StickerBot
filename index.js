@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const discord = require('discord.js');
 const http = require('http');
+const stickerController = require("./controller/stickerController");
 const app = new discord.Client();
 const PREFIX = ".s";
 const STICKER_ROLE = "Sticker Master";
@@ -25,19 +26,6 @@ mongoose.connect(process.env.HOST_NAME, {
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Database Connection ERROR:'));
 
-const guildSchema = new mongoose.Schema({
-	guildId: {
-		type: String,
-		required: true
-	},
-	sticker: [{
-		name: String,
-		url: String
-	}],
-});
-
-const GuildModel = mongoose.model('Guild', guildSchema);
-
 
 app.login(process.env.TOKEN, console.log(`Connected`)).catch((err) => console.log(`Connection failed: ${err}`));
 
@@ -50,7 +38,7 @@ app.on('message', async message => {
 		const input = message.content.slice(PREFIX.length).trim().split(' ');
 		const command = input.shift();
 
-		if (command === "add") await addSticker(message.guild.id, message.member.roles.cache, input, (err) => {
+		if (command === "add") stickerController.addSticker(message.guild.id, message.member.roles.cache, input, (err) => {
 			switch (err) {
 				case 0:
 					message.channel.send(`"${input[0]}" adlı sticker eklendi!`);
@@ -75,7 +63,7 @@ app.on('message', async message => {
 					break;
 			}
 		});
-		else if (command === "remove") removeSticker(message.guild.id, message.member.roles.cache, input, (err) => {
+		else if (command === "remove") stickerController.removeSticker(message.guild.id, message.member.roles.cache, input, (err) => {
 			switch (err) {
 				case 0:
 					message.channel.send(`"${input[0]}" adlı sticker silindi!`);
@@ -94,77 +82,14 @@ app.on('message', async message => {
 					break;
 			}
 		});
-		else await getStickerObj(message.guild.id, command, (result) => {
+		else if (command === "help"){
+			message.channel.send("Sticker eklemek için \".s add <AD> <Resim linki>\"");
+			message.channel.send("Sticker silmek için \".s remove <AD>\"");
+			message.channel.send("Sticker göndermek için \".s <AD>\"");
+		}
+		else stickerController.getSticker(message.guild.id, command, (result) => {
 			if (result) message.channel.send(result.url);
-			else message.channel.send(`"${command}" diye bir çıkartma yok`)
+			else message.channel.send(`"${command}" diye bir çıkartma yok!\nYardım için help komtunu kullanabilirsiniz.`)
 		});
 	}
 });
-
-const removeSticker = (guildId, roles, args, next) => {
-	if (roles.find(role => role.name === STICKER_ROLE)) {
-		if (args.length != 1) return next(1);
-		isStickerInGuild(guildId, args[0], (result) => {
-			if (result) {
-				for (let index = 0; index < result.sticker.length; index++) {
-					if (result.sticker[index].name === args[0]) {
-						result.sticker.splice(index, 1);
-						result.save();
-						return next(0);
-					}
-				}
-			} else return next(2);
-		});
-	} else return next(5);
-
-}
-
-const addSticker = async (guildId, roles, args, next) => {
-	if (roles.find(role => role.name === STICKER_ROLE)) {
-		if (args.length != 2) return next(1); // Argument Error
-		if (!isImgLink(args[1])) return next(4)
-		const sticker = {
-			name: args[0],
-			url: args[1]
-		};
-		await GuildModel.findOne({
-			guildId: guildId
-		}, async (error, result) => {
-			if (!error) {
-				if (!result) result = await GuildModel.create({
-					guildId: guildId
-				});
-				await isStickerInGuild(result.guildId, sticker.name, (fSticker) => {
-					if (fSticker) {
-						return next(3);
-					} else {
-						result.sticker.push(sticker);
-						result.save();
-						return next(0);
-					}
-				});
-			} else return next(2); // Error
-		});
-	} else next(5);
-
-};
-
-const getStickerObj = async (guildId, name, next) => {
-	isStickerInGuild(guildId, name, (result) => {
-		if (result) {
-			next(result.sticker.find((e) => e.name === name));
-		} else return next(undefined);
-	})
-}
-
-const isStickerInGuild = async (guildId, name, next) => {
-	next(await GuildModel.findOne({
-		guildId: guildId,
-		"sticker.name": name
-	}));
-}
-
-function isImgLink(url) {
-	if (typeof url !== 'string') return false;
-	return (url.match(/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp|webp)(\?(.*))?$/gmi) != null);
-}
