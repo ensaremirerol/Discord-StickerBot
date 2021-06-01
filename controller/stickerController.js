@@ -1,5 +1,5 @@
 const GuildModel = require("../models/model_guildSticker");
-
+const STICKER_ROLE = "Sticker Master";
 exports.addSticker = async (guildId, roles, args, next) => {
     if (roles.find(role => role.name === STICKER_ROLE)) {
         if (args.length != 2) return next(1); // Argument Error
