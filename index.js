@@ -6,7 +6,6 @@ const langStrings = require("./language/language_strings");
 const lang = require("./language/language");
 const app = new discord.Client();
 const PREFIX = ".s";
-const STICKER_ROLE = "Sticker Master";
 require('dotenv').config()
 
 /*
@@ -41,19 +40,19 @@ app.on('message', async message => {
 		const command = input.shift();
 
 		if (command === "add") stickerController.addSticker(message.guild.id, message.member.roles.cache, input, (err) => {
-			message.channel.send(lang.useTemplate(langStrings.tr.add[err], [input[0]]))
+			message.channel.send(lang.useTemplate(langStrings.en.add[err], [input[0]]))
 		});
 		else if (command === "remove") stickerController.removeSticker(message.guild.id, message.member.roles.cache, input, (err) => {
-			message.channel.send(lang.useTemplate(langStrings.tr.remove[err], [input[0]]))
+			message.channel.send(lang.useTemplate(langStrings.en.remove[err], [input[0]]))
 		});
 		else if (command === "help"){
-			message.channel.send(langStrings.tr.help[0]);
-			message.channel.send(langStrings.tr.help[1]);
-			message.channel.send(langStrings.tr.help[2]);
+			message.channel.send(langStrings.en.help[0]);
+			message.channel.send(langStrings.en.help[1]);
+			message.channel.send(langStrings.en.help[2]);
 		}
 		else stickerController.getSticker(message.guild.id, command, (result) => {
 			if (result) message.channel.send(result.url);
-			else message.channel.send(lang.useTemplate(langStrings.tr.use[0], [command]));
+			else message.channel.send(lang.useTemplate(langStrings.en.use[0], [command]));
 		});
 	}
 });
