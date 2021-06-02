@@ -53,7 +53,7 @@ app.on('message', async message => {
 		}
 		else stickerController.getSticker(message.guild.id, command, (result) => {
 			if (result) message.channel.send(result.url);
-			else message.channel.send(lang.useTemplate(langStrings.tr.use[0], command));
+			else message.channel.send(lang.useTemplate(langStrings.tr.use[0], [command]));
 		});
 	}
 });
