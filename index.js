@@ -38,7 +38,6 @@ app.on('message', async message => {
 	if (message.content.startsWith(PREFIX)) {
 		const input = message.content.slice(PREFIX.length).trim().split(' ');
 		const command = input.shift();
-		console.log(command);
 
 		if (command === "add") stickerController.addSticker(message.guild.id, message.member.roles.cache, input, (err) => {
 			message.channel.send(lang.useTemplate(langStrings.en.add[err], [input[0]]))
