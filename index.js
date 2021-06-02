@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const discord = require('discord.js');
+const http = require('http');
 const stickerController = require("./controller/stickerController");
 const langStrings = require("./language/language_strings");
 const lang = require("./language/language");
