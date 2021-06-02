@@ -12,6 +12,13 @@ require('dotenv').config()
  * 	CALLBACK HELL MUHAHAHA
  */
 
+const server = http.createServer((req, res) =>{
+	res.writeHead(200, { 'Content-Type': 'application/xhtml+xml; charset=utf-8' });
+    res.write("<h2>StickerBot</h2>");
+	res.end();
+});
+
+server.listen(process.env.PORT, () => console.log("Heroku bağlandı"));
 
 mongoose.connect(process.env.HOST_NAME, {
 	useNewUrlParser: true,
