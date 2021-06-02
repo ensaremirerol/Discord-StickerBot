@@ -38,6 +38,7 @@ app.on('message', async message => {
 	if (message.content.startsWith(PREFIX)) {
 		const input = message.content.slice(PREFIX.length).trim().split(' ');
 		const command = input.shift();
+		console.log(command);
 
 		if (command === "add") stickerController.addSticker(message.guild.id, message.member.roles.cache, input, (err) => {
 			message.channel.send(lang.useTemplate(langStrings.en.add[err], [input[0]]))
@@ -45,7 +46,7 @@ app.on('message', async message => {
 		else if (command === "remove") stickerController.removeSticker(message.guild.id, message.member.roles.cache, input, (err) => {
 			message.channel.send(lang.useTemplate(langStrings.en.remove[err], [input[0]]))
 		});
-		else if (command === "help"){
+		else if (command === "help" || command == ""){
 			message.channel.send(langStrings.en.help[0]);
 			message.channel.send(langStrings.en.help[1]);
 			message.channel.send(langStrings.en.help[2]);
