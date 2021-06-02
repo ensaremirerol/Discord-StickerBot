@@ -10,7 +10,6 @@ require('dotenv').config()
  * 	CALLBACK HELL MUHAHAHA
  */
 
-server.listen(process.env.PORT, () => console.log("Heroku bağlandı"));
 
 mongoose.connect(process.env.HOST_NAME, {
 	useNewUrlParser: true,
