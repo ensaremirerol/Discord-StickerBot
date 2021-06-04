@@ -3,14 +3,17 @@ const discord = require('discord.js');
 const stickerController = require("./controller/stickerController");
 const langStrings = require("./language/language_strings");
 const lang = require("./language/language");
-const app = new discord.Client();
+const dc = new discord.Client();
+const express = require('express');
+const app = express();
 const PREFIX = ".s";
-const STICKER_ROLE = "Sticker Master";
 require('dotenv').config()
 
-/*
- * 	CALLBACK HELL MUHAHAHA
- */
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({
+    extended: true
+}));
+app.use(express.json());
 
 mongoose.connect(process.env.HOST_NAME, {
 	useNewUrlParser: true,
@@ -20,13 +23,13 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Database Connection ERROR:'));
 
 
-app.login(process.env.TOKEN, console.log(`Connected`)).catch((err) => console.log(`Connection failed: ${err}`));
+dc.login(process.env.TOKEN, console.log(`Connected`)).catch((err) => console.log(`Connection failed: ${err}`));
 
-app.on('ready', () => {
+dc.on('ready', () => {
 	console.log('Bot Ready!');
 });
 
-app.on('message', async message => {
+dc.on('message', async message => {
 	if (message.content.startsWith(PREFIX)) {
 		const input = message.content.slice(PREFIX.length).trim().split(' ');
 		const command = input.shift();
@@ -48,3 +51,8 @@ app.on('message', async message => {
 		});
 	}
 });
+
+app.get("/", (req, res) => res.sendFile("./index.html"));
+app.post("/sticker", (req, res) => console.log(req.body));
+
+app.listen(process.env.PORT, () => console.log(`Sunucu ${process.env.PORT} da başladı`));
