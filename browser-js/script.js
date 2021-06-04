@@ -15,7 +15,9 @@ file.onchange = (data) => {
                 var file = zip.files[fileName];
                 return file.async("blob").then(function (blob) {
                     var reader = new FileReader();
-                    return {
+                    reader.readAsArrayBuffer(blob);
+                    return reader.onloadend =
+                    {
                         name: fileName, 
                         data: reader.readAsArrayBuffer(blob).result
                     };
