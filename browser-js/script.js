@@ -31,7 +31,7 @@ file.onchange = (data) => {
                 var br = document.createElement("br");
                 imgBlob.type = "hidden";
                 imgBlob.name = `img${el.name}`;
-                imgBlob.value = el.blob;
+                imgBlob.value = el.data;
                 name.type = "text";
                 name.name = `name${el.name}`;
                 img.src = el.data;
