@@ -14,13 +14,24 @@ file.onchange = (data) => {
             }).map(function (fileName) {
                 var file = zip.files[fileName];
                 return file.async("blob").then(function (blob) {
-                    var reader = new FileReader();
-                    reader.readAsArrayBuffer(blob);
-                    return reader.onloadend =
-                    {
-                        name: fileName, 
-                        data: reader.readAsArrayBuffer(blob).result
-                    };
+                    return blobToBase64(blob, (result) => {
+                        var img = document.createElement("img");
+                        var imgBlob = document.createElement("input");
+                        var name = document.createElement("input");
+                        var br = document.createElement("br");
+                        imgBlob.type = "hidden";
+                        imgBlob.name = `img${fileName}`;
+                        imgBlob.value = result;
+                        name.type = "text";
+                        name.name = `name${fileName}`;
+                        img.src = `data:image/png;base64, ${result}`;
+                        name.value = fileName;
+                        resDom.append(img);
+                        resDom.append(name);
+                        resDom.append(imgBlob);
+                        resDom.append(br);
+                    });
+
                 });
             });
             return Promise.all(promises);
@@ -28,21 +39,7 @@ file.onchange = (data) => {
             alert("Not a .wastickers file!")
         }).then((result) => {
             result.forEach((el) => {
-                var img = document.createElement("img");
-                var imgBlob = document.createElement("input");
-                var name = document.createElement("input");
-                var br = document.createElement("br");
-                imgBlob.type = "hidden";
-                imgBlob.name = `img${el.name}`;
-                imgBlob.value = el.data;
-                name.type = "text";
-                name.name = `name${el.name}`;
-                img.src = el.data;
-                name.value = el.name;
-                resDom.append(img);
-                resDom.append(name);
-                resDom.append(imgBlob);
-                resDom.append(br);
+
             });
         });
 
@@ -51,3 +48,14 @@ file.onchange = (data) => {
 const getFileExtension = function (fileName) {
     return fileName.match(/\.[0-9a-z]+$/i)[0];
 }
+
+
+const blobToBase64 = function (blob, callback) {
+    var reader = new FileReader();
+    reader.onload = function () {
+        var dataUrl = reader.result;
+        var base64 = dataUrl.split(',')[1];
+        return callback(base64);
+    };
+    reader.readAsDataURL(blob);
+};
