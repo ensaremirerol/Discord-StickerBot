@@ -52,7 +52,7 @@ dc.on('message', async message => {
 	}
 });
 
-app.get("/", (req, res) => res.sendFile("./index.html"));
+app.get("/", (req, res) => res.sendFile("index.html"));
 app.post("/sticker", (req, res) => console.log(req.body));
 
 app.listen(process.env.PORT, () => console.log(`Sunucu ${process.env.PORT} da başladı`));
