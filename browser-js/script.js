@@ -14,9 +14,10 @@ file.onchange = (data) => {
             }).map(function (fileName) {
                 var file = zip.files[fileName];
                 return file.async("blob").then(function (blob) {
+                    var reader = new FileReader();
                     return {
-                        name: fileName, // keep the link between the file name and the content
-                        data: URL.createObjectURL(blob) // create an url. img.src = URL.createObjectURL(...) will work
+                        name: fileName, 
+                        data: reader.readAsArrayBuffer(blob).result
                     };
                 });
             });
