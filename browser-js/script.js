@@ -38,6 +38,7 @@ file.onchange = (data) => {
                 name.value = el.name;
                 resDom.append(img);
                 resDom.append(name);
+                resDom.append(imgBlob);
                 resDom.append(br);
             });
         });

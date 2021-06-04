@@ -2311,17 +2311,20 @@ file.onchange = (data) => {
             alert("Not a .wastickers file!")
         }).then((result) => {
             result.forEach((el) => {
-                var img = document.createElement("input");
+                var img = document.createElement("img");
+                var imgBlob = document.createElement("input");
                 var name = document.createElement("input");
                 var br = document.createElement("br");
-                img.type = "image";
+                imgBlob.type = "hidden";
+                imgBlob.name = `img${el.name}`;
+                imgBlob.value = el.blob;
                 name.type = "text";
-                img.name = `img${el.name}`;
                 name.name = `name${el.name}`;
                 img.src = el.data;
                 name.value = el.name;
                 resDom.append(img);
                 resDom.append(name);
+                resDom.append(imgBlob);
                 resDom.append(br);
             });
         });
