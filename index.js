@@ -13,7 +13,7 @@ app.use(express.static('public'));
 app.use(express.urlencoded({
     extended: true
 }));
-app.use(express.json());
+app.use(express.json({limit: "50mb"}));
 
 mongoose.connect(process.env.HOST_NAME, {
 	useNewUrlParser: true,
